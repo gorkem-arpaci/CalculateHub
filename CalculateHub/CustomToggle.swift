@@ -24,6 +24,7 @@ struct CustomToggle: View {
             RoundedRectangle(cornerRadius: 16)
                 .frame(width: 72, height: 32)
                 .foregroundStyle(.background.tertiary)
+                .shadow(radius: 16)
             
             HStack(spacing:17) {
                 

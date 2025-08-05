@@ -7,10 +7,17 @@
 
 import SwiftUI
 
+
+
+var toInfix = InfixToPostfix()
+let symbols: [String] = ["+", "-", "x", "÷", "%"]
+
 struct MainPageView: View {
+    @State private var result = "0"
+    @State private var operation : String = ""
+    
     @EnvironmentObject var themeManager : ThemeManager
-    let result: Int = 1991
-    let operation: String = "1907+31"
+
     var body: some View {
         VStack(alignment: .trailing) {
             
@@ -26,7 +33,7 @@ struct MainPageView: View {
             
             
             HStack {
-                ButtonLayout(title:"C", background: Color.gray)
+                ButtonLayout(title:"C", background: Color.gray, result: $result, operation: $operation)
                 
                 Button(action: {
                     
@@ -40,32 +47,32 @@ struct MainPageView: View {
                 .background(Color.gray, in:RoundedRectangle(cornerRadius: 24))
                 .padding([.leading, .bottom, .trailing], 7)
                 
-                ButtonLayout(title: "%", background: Color.gray)
-                ButtonLayout(title: "÷", background: Color.indigo)
+                ButtonLayout(title: "%", background: Color.gray, result: $result, operation: $operation)
+                ButtonLayout(title: "÷", background: Color.indigo, result: $result, operation: $operation)
             }
             HStack {
-                ButtonLayout(title: "7", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "8", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "9", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "x", background: Color.indigo)
+                ButtonLayout(title: "7", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "8", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "9", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "x", background: Color.indigo, result: $result, operation: $operation)
             }
             HStack {
-                ButtonLayout(title: "4", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "5", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "6", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "-", background: Color.indigo)
+                ButtonLayout(title: "4", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "5", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "6", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "-", background: Color.indigo, result: $result, operation: $operation)
             }
             HStack {
-                ButtonLayout(title: "1", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "2", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "3", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "+", background: Color.indigo)
+                ButtonLayout(title: "1", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "2", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "3", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "+", background: Color.indigo, result: $result, operation: $operation)
             }
             HStack {
-                ButtonLayout(title: ".", background: Color(UIColor.systemGray4))
-                ButtonLayout(title: "0", background: Color(UIColor.systemGray4))
+                ButtonLayout(title: ".", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
+                ButtonLayout(title: "0", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
                 
-                Button(action: {}){
+                Button(action: {self.result.removeLast()}){
                     Image(systemName: "delete.left")
                         .foregroundStyle(.primary)
                         .frame(width: 78, height: 78)
@@ -75,18 +82,13 @@ struct MainPageView: View {
                 .background(Color(UIColor.systemGray4), in:RoundedRectangle(cornerRadius: 24))
                 .padding([.leading, .bottom, .trailing], 7)
                 
-                ButtonLayout(title: "=", background: Color.indigo)
+                ButtonLayout(title: "=", background: Color.indigo, result: $result, operation: $operation)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .padding(.bottom, 25)
         .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
-        .onAppear{
-            let toPostfix = InfixToPostfix()
-            let post = toPostfix.converter("4 + 2 - 6 * 3")
-            sleep(3)
-            print(toPostfix.calculatePostfix(post))
-        }
+
     }
 }
 
@@ -99,12 +101,14 @@ struct ButtonLayout : View {
     
     let title : String
     let background : Color
+    @Binding var result : String
+    @Binding var operation : String
     
     
     var body: some View {
         
         Button(action: {
-            
+            addParameter(value: title)
         }){
             Text(title)
                 .font(Font.custom("WorkSans-Regular", size: 32))
@@ -115,5 +119,68 @@ struct ButtonLayout : View {
         .background(background, in:RoundedRectangle(cornerRadius: 24))
         .padding([.leading, .bottom, .trailing], 7)
         
+    }
+    
+
+    
+    func addParameter(value: String) {
+        let operators: [String] = ["+", "-", "x", "÷", "%", "."]
+
+        
+        switch value {
+        case "C":
+            result = "0"
+            
+        case "=":
+            let post = toInfix.converter(separateString(result))
+            let calculation = toInfix.calculatePostfix(post)
+            operation = result
+            result = calculation.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(calculation)) : String(Float(calculation))
+            
+        case "0" where result == "0":
+            return
+            
+        case let op where operators.contains(op):
+            // Operator işlemi
+            guard !result.isEmpty && result != "0" else { return }
+            
+            // Son karakter de operator ise değiştir
+            if let lastChar = result.last, operators.contains(String(lastChar)) {
+                result.removeLast()
+            }
+            result.append(op)
+            
+        default:
+            // Sayı işlemi
+            if result == "0" {
+                result = value
+            } else {
+                result.append(value)
+            }
+        }
+    }
+    
+    func separateString(_ input: String) -> String {
+        var result : String = ""
+        var num : String = ""
+        
+        for char in input {
+            if !symbols.contains(String(char)) {
+                num.append(char)
+            }
+            else {
+                if !num.isEmpty {
+                    result += num + " "
+                    num = ""
+                }
+                result += String(char) + " "
+            }
+        }
+        
+        if !num.isEmpty {
+             result += num
+        }
+        
+        return result.trimmingCharacters(in: .whitespaces)
     }
 }

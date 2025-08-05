@@ -68,6 +68,7 @@ class InfixToPostfix {
             }
             
             else {
+                
                 while let top = operatorStack.peek(),
                       (precedence(top) > precedence(token) ||
                        (precedence(top) == precedence(token) && !isRightAssociative(token))) {
@@ -104,9 +105,9 @@ class InfixToPostfix {
                     stack.push(left + right)
                 case "-":
                     stack.push(left - right)
-                case "*":
+                case "*", "x":
                     stack.push(left * right)
-                case "/":
+                case "/", "÷":
                     stack.push(left / right)
                 case "%":
                     if right == 0 {
