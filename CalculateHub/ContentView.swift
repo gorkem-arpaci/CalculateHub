@@ -8,11 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var number : Int = 0
+    
     var body: some View {
         ZStack {
             VStack {
-                CustomToggle()
-                MainPageView()
+                VStack{
+                    
+                    TabViewPage(selectedIndex: $number)
+                    CustomToggle()
+                }
+                
+                switch number {
+                case 0:
+                    MainPageView()
+                case 1:
+                    CollegeFunctionsPage()
+                case 2:
+                    AIPage()
+                default:
+                    MainPageView()
+                }
+
             }
 
         }

@@ -92,10 +92,6 @@ struct MainPageView: View {
     }
 }
 
-#Preview {
-    MainPageView()
-        .environmentObject(ThemeManager())
-}
 
 struct ButtonLayout : View {
     
@@ -183,4 +179,9 @@ struct ButtonLayout : View {
         
         return result.trimmingCharacters(in: .whitespaces)
     }
+}
+
+#Preview {
+    MainPageView()
+        .environmentObject(ThemeManager())
 }
