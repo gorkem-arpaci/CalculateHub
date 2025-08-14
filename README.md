@@ -44,6 +44,3 @@ Katkılarınız projeyi daha iyi hale getirmemize yardımcı olur. Katkıda bulu
 4.  Dalınızı "push" edin (`git push origin ozellik/yeni-ozellik`).
 5.  Bir "Pull Request" açın.
 
-## Lisans
-
-Bu proje MIT Lisansı altında lisanslanmıştır.
