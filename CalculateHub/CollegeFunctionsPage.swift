@@ -8,11 +8,64 @@
 import SwiftUI
 
 struct CollegeFunctionsPage: View {
+
+    var functions: [String] = [
+        "Bisection", "Conjugate", "Gradient-Decent", "Newton-Rophson",
+        "SafeGuarded", "Secant", "ToBinary",
+    ]
+    @Binding var path: [String]
+    @Binding var isDetailPage: Bool
+
+    let columns = [
+        GridItem(.flexible()),  // 1. sütun
+        GridItem(.flexible()),  // 2. sütun
+        GridItem(.flexible()),  // 3. sütun
+    ]
+
     var body: some View {
-        Text("SecondPage")
+         
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 20) {
+                    ForEach(functions, id: \.self) { function in
+                        Button(action: {path.append(function)
+                        }) {
+                            Text(function)
+                                .font(Font.custom("WorkSans-Regular", size: 16))
+                                .fontWeight(.regular)
+                                .foregroundColor(.primary)
+                                .frame(width: 117, height: 117)
+                                .background(
+                                    .indigo,
+                                    in: RoundedRectangle(cornerRadius: 24)
+                                )
+                        }
+
+                    }
+                }
+            
+        }
+
+    }
+}
+
+struct FunctionButtons: View {
+    let title: String
+
+    var body: some View {
+
+        Button(action: {}) {
+            Text(title)
+                .font(Font.custom("WorkSans-Regular", size: 16))
+                .fontWeight(.regular)
+                .foregroundColor(.primary)
+                .frame(width: 117, height: 117, alignment: .center)
+
+        }
+        .background(.indigo, in: RoundedRectangle(cornerRadius: 24))
+
     }
 }
 
 #Preview {
-    CollegeFunctionsPage()
+    CollegeFunctionsPage(path: .constant([""]), isDetailPage: .constant(true))
 }
