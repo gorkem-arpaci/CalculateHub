@@ -44,7 +44,7 @@ struct ContentView: View {
                 isDetailPage = !newPath.isEmpty
             }
             .navigationDestination(for: String.self) { functionName in
-                Deneme()
+                FunctionDetail(path: $path)
                 
             }
             

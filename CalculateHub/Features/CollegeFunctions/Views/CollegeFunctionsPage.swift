@@ -10,8 +10,8 @@ import SwiftUI
 struct CollegeFunctionsPage: View {
 
     var functions: [String] = [
-        "Bisection", "Conjugate", "Gradient-Decent", "Newton-Rophson",
-        "SafeGuarded", "Secant", "ToBinary",
+        "Bisection", "Conjugate", "Gradient-Decent", "Newton-Raphson",
+        "Safe-Guarded", "Secant", "ToBinary",
     ]
     @Binding var path: [String]
     @Binding var isDetailPage: Bool

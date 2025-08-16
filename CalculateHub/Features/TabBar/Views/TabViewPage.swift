@@ -22,6 +22,7 @@ struct TabViewPage: View {
                     .clipShape(
                         RoundedRectangle(cornerRadius: 24)
                     )
+                    .shadow(radius: 16)
                 HStack(spacing: 40) {
                     CustomCalculateIcon()
                         .onTapGesture {
