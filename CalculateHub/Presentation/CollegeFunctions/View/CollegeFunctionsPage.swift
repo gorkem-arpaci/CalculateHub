@@ -9,10 +9,7 @@ import SwiftUI
 
 struct CollegeFunctionsPage: View {
 
-    var functions: [String] = [
-        "Bisection", "Conjugate", "Gradient-Decent", "Newton-Raphson",
-        "Safe-Guarded", "Secant", "ToBinary",
-    ]
+    let functions = FormulaType.allCases
     @Binding var path: [String]
     @Binding var isDetailPage: Bool
 
@@ -27,9 +24,9 @@ struct CollegeFunctionsPage: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(functions, id: \.self) { function in
-                        Button(action: {path.append(function)
+                        Button(action: {path.append(function.title)
                         }) {
-                            Text(function)
+                            Text(function.title)
                                 .font(Font.custom("WorkSans-Regular", size: 16))
                                 .fontWeight(.regular)
                                 .foregroundColor(.primary)

@@ -17,8 +17,9 @@ import SwiftUI
 
 struct FunctionDetail: View {
     @EnvironmentObject var themeManager : ThemeManager
+    @StateObject var viewModel = NewtonRaphsonViewModel()
     @State private var mainLabel : String = ""
-    @State private var resultLabel : String = "Fonksiyon girin"
+    @State private var resultLabel : String = ""
     @Binding var path: [String]
     
 //    variables
@@ -36,13 +37,18 @@ struct FunctionDetail: View {
         
         VStack(alignment: .trailing) {
             VStack(alignment: .trailing) {
-                Text(resultLabel)
-                    .foregroundStyle(.gray.opacity(0.8))
+                
+                TextField("Fonksiyon giriniz", text: $resultLabel)
+                    .multilineTextAlignment(.trailing)
+                    .foregroundStyle(.primary)
                     .font(Font.custom("WorkSans-Light", size: 32))
+                    .textInputAutocapitalization(.never)
+                
                 
                 Text(String(mainLabel))
+                    
                     .foregroundStyle(.primary)
-                    .font(Font.custom("WorkSans-Light", size: 84))
+                    .font(Font.custom("WorkSans-Light", size: 64))
             }
             .padding(10)
             
@@ -56,7 +62,7 @@ struct FunctionDetail: View {
                     }
                 case "Conjugate":
                         TextFieldView(text: $nums, placeholder: "1-1 matris giriniz")
-                case "Gradient-Decent":
+                case "Gradient-Descent":
                     VStack {
                         TextFieldView(text: $x0, placeholder: "Başlangıç değeri girin")
                         TextFieldView(text: $alpha, placeholder: "Alpha değeri girin")
@@ -80,7 +86,24 @@ struct FunctionDetail: View {
             
             
         }
-        Button(action: {}) {
+        Button(action: {
+            Task {
+                guard let selected = path.last else { return }
+                
+                switch selected {
+                case "Newton-Raphson":
+                    await viewModel.calculateNewtonRaphson(x_0: x0, func_input: resultLabel)
+                case "Gradient-Descent":
+                    await viewModel.calculateGradientDescent(x_0: x0, func_input: resultLabel, alpha: alpha)
+                default:
+                    break
+                }
+
+                
+                   mainLabel = viewModel.x
+            }
+        
+        }) {
             Text("Solve")
                 .foregroundColor(.primary)
                 
@@ -111,13 +134,15 @@ struct TextFieldView: View {
             .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
             .font(.system(size: 16, weight: .regular, design: .rounded))
             .foregroundColor(.primary)
-            .frame(maxWidth: 340) // genişliği sınırlı, ama ekranla uyumlu
+            .frame(maxWidth: 340)
             .padding(.horizontal)
-    }
+            .textInputAutocapitalization(.never)
+        }
 }
 
-#Preview {
-    @State var list = [""]
-    FunctionDetail(path: $list)
-        .environmentObject(ThemeManager())
-}
+//#Preview {
+//    @State var list = [""]
+//    FunctionDetail(path: $list)
+//        .environmentObject(ThemeManager())
+//}
+
