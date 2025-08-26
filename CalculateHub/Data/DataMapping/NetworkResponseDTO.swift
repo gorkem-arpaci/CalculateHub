@@ -7,10 +7,26 @@
 
 import Foundation
 
-struct NewtonRaphsonResponseDTO: Decodable {
-    let result: String
-}
+//struct NewtonRaphsonResponseDTO: Decodable {
+//    let result: String
+//}
+//
+//struct GradientDescentResponseDTO: Decodable {
+//    let result: String
+//}
+//
+//struct SafeGuardedResponseDTO: Decodable {
+//    let result: String
+//}
+//
+//struct ConjugateResponseDTO: Decodable {
+//    let result: String
+//}
+//
+//struct SecantResponseDTO: Decodable {
+//    let result: String
+//}
 
-struct GradientDescentResponseDTO: Decodable {
+struct IterationResponseDTO: Decodable {
     let result: String
 }

@@ -95,6 +95,14 @@ struct FunctionDetail: View {
                     await viewModel.calculateNewtonRaphson(x_0: x0, func_input: resultLabel)
                 case "Gradient-Descent":
                     await viewModel.calculateGradientDescent(x_0: x0, func_input: resultLabel, alpha: alpha)
+                case "Safe-Guarded":
+                    await viewModel.calculateSafeGuarded(x_0: x0, func_input: resultLabel)
+                case "Conjugate":
+                    await viewModel.calculateConjugate(func_input: resultLabel, nums: nums)
+                case "Bisection":
+                    await viewModel.calculateBisection(a: aText, b: bText, func_input: resultLabel)
+                case "Secant":
+                    await viewModel.calculateSecant(x_0: x0, x_1: x1, func_input: resultLabel)
                 default:
                     break
                 }
