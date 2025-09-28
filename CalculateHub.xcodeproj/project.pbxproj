@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5561F3AC2E66F80B00A29B23 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 5561F3AB2E66F80500A29B23 /* .gitignore */; };
+		5561F3AE2E66F88D00A29B23 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = 5561F3AD2E66F88900A29B23 /* .env */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		553B8D432E3D7922004382E8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +32,8 @@
 		553B8D352E3D791E004382E8 /* CalculateHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalculateHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		553B8D422E3D7922004382E8 /* CalculateHubTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculateHubTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		553B8D4C2E3D7922004382E8 /* CalculateHubUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalculateHubUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5561F3AB2E66F80500A29B23 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		5561F3AD2E66F88900A29B23 /* .env */ = {isa = PBXFileReference; lastKnownFileType = text; path = .env; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +82,8 @@
 		553B8D2C2E3D791E004382E8 = {
 			isa = PBXGroup;
 			children = (
+				5561F3AD2E66F88900A29B23 /* .env */,
+				5561F3AB2E66F80500A29B23 /* .gitignore */,
 				553B8D372E3D791E004382E8 /* CalculateHub */,
 				553B8D452E3D7922004382E8 /* CalculateHubTests */,
 				553B8D4F2E3D7922004382E8 /* CalculateHubUITests */,
@@ -214,6 +223,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5561F3AE2E66F88D00A29B23 /* .env in Resources */,
+				5561F3AC2E66F80B00A29B23 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,6 +334,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "$(PRODUCT_NAME) requires permission to scan files";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -380,6 +392,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "$(PRODUCT_NAME) requires permission to scan files";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -397,6 +410,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XL4D4KAL5M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -424,6 +438,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XL4D4KAL5M;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

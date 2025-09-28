@@ -8,124 +8,98 @@
 
 import Foundation
 
-
-protocol Stackable {
-    associatedtype Element
-    func peek() -> Element?
-    mutating func push(_ element: Element)
-    @discardableResult mutating func pop() -> Element?
+enum Token {
+    case number(Double)
+    case op(Character)
+    case leftParen
+    case rightParen
 }
 
-extension Stackable {
-    var isEmpty: Bool { peek() == nil }
-}
-
-
-struct Stack<Element>: Stackable where Element: Equatable {
-    private var storage = [Element]()
-    func peek() -> Element? { storage.last }
-    mutating func push(_ element: Element) { storage.append(element)  }
-    mutating func pop() -> Element? { storage.popLast() }
-}
-
-extension Stack: Equatable {
-    static func == (lhs: Stack<Element>, rhs: Stack<Element>) -> Bool { lhs.storage == rhs.storage }
-}
-
-extension Stack: CustomStringConvertible {
-    var description: String { "\(storage)" }
-}
+func tokenize(_ expr: String) -> [Token] {
+    var tokens: [Token] = []
+    var numberBuffer = ""
     
-extension Stack: ExpressibleByArrayLiteral {
-    init(arrayLiteral elements: Self.Element...) { storage = elements }
-}
-
-class InfixToPostfix {
-    private var operatorStack = Stack<String>()
-    
-    private func precedence(_ op: String) -> Int {
-        switch op {
-        case "+", "-": return 1
-        case "*", "/", "%": return 2
-        case "^": return 3
-        default: return 0
-        }
-    }
-    
-    private func isRightAssociative(_ op: String) -> Bool {
-          return op == ""
-      }
-    
-    func converter(_ infix: String) -> String {
-        operatorStack = Stack<String>()
-        var postfix = [String]()
-        
-        let tokens = infix.components(separatedBy: " ")
-        
-        for token in tokens {
-            if Double(token) != nil {
-                postfix.append(token)
+    for char in expr.replacingOccurrences(of: " ", with: "") {
+        if char.isNumber || char == "." {
+            numberBuffer.append(char)
+        } else {
+            if !numberBuffer.isEmpty {
+                tokens.append(.number(Double(numberBuffer)!))
+                numberBuffer = ""
             }
             
-            else {
-                
-                while let top = operatorStack.peek(),
-                      (precedence(top) > precedence(token) ||
-                       (precedence(top) == precedence(token) && !isRightAssociative(token))) {
-                    postfix.append(operatorStack.pop()!)
-                }
-                operatorStack.push(token)
+            switch char {
+            case "+", "-", "*", "/":
+                tokens.append(.op(char))
+            case "(":
+                tokens.append(.leftParen)
+            case ")":
+                tokens.append(.rightParen)
+            default:
+                break
             }
         }
-        
-        while !operatorStack.isEmpty {
-            postfix.append(operatorStack.pop()!)
-        }
-        
-        let result = postfix.joined(separator: " ")
-        return result
     }
-    
-    func calculatePostfix(_ postfix: String) -> Double {
-        var stack = Stack<Double>()
-        
-        let tokens = postfix.components(separatedBy: " ")
-        
-        for token in tokens {
-            if Double(token) != nil {
-                stack.push(Double(token)!)
-            }
-            
-            else {
-                let right = stack.pop()!
-                let left = stack.pop()!
-                
-                switch token {
-                case "+":
-                    stack.push(left + right)
-                case "-":
-                    stack.push(left - right)
-                case "*", "x":
-                    stack.push(left * right)
-                case "/", "÷":
-                    stack.push(left / right)
-                case "%":
-                    if right == 0 {
-                        fatalError("Cannot divide by zero")
-                    }
-                    stack.push(left.truncatingRemainder(dividingBy: right))
-                default:
-                    break
-                }
-                
-            }
-        }
-        let result = stack.pop()!
-        
-        return result
-        
+    if !numberBuffer.isEmpty {
+        tokens.append(.number(Double(numberBuffer)!))
+    }
+    return tokens
+}
+
+func precedence(_ op: Character) -> Int {
+    switch op {
+    case "+", "-": return 1
+    case "*", "/": return 2
+    default: return 0
     }
 }
 
+func applyOp(_ a: Double, _ b: Double, _ op: Character) -> Double {
+    switch op {
+    case "+": return a + b
+    case "-": return a - b
+    case "*": return a * b
+    case "/": return a / b
+    default: fatalError("Geçersiz operator")
+    }
+}
 
+func evaluate(_ expr: String) -> Double {
+    let tokens = tokenize(expr)
+    var values: [Double] = []
+    var ops: [Character] = []
+    
+    for token in tokens {
+        switch token {
+        case .number(let num):
+            values.append(num)
+        case .leftParen:
+            ops.append("(")
+        case .rightParen:
+            while let op = ops.last, op != "(" {
+                _ = ops.popLast()
+                let b = values.popLast()!
+                let a = values.popLast()!
+                values.append(applyOp(a, b, op))
+            }
+            _ = ops.popLast() // "(" kaldır
+        case .op(let op):
+            while let last = ops.last, last != "(", precedence(last) >= precedence(op) {
+                _ = ops.popLast()
+                let b = values.popLast()!
+                let a = values.popLast()!
+                values.append(applyOp(a, b, last))
+            }
+            ops.append(op)
+        }
+    }
+    
+    while let op = ops.popLast() {
+        let b = values.popLast()!
+        let a = values.popLast()!
+        values.append(applyOp(a, b, op))
+    }
+    
+    return values[0]
+}
 

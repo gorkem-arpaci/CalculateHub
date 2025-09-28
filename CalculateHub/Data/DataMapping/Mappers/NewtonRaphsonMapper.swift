@@ -9,30 +9,14 @@ import Foundation
 
 extension IterationResponseDTO {
     func toDomain() -> RootFindingResult {
-        return RootFindingResult(result: result)
+        return RootFindingResult(iteration: iteration, root: root)
     }
+    
+    
 }
 
-//extension NewtonRaphsonResponseDTO {
-//    func toDomain() -> RootFindingResult {
-//        return RootFindingResult(result: result)
-//    }
-//}
-//
-//extension GradientDescentResponseDTO {
-//    func toDomain() -> RootFindingResult {
-//        return RootFindingResult(result: result)
-//    }
-//}
-//
-//extension SafeGuardedResponseDTO {
-//    func toDomain() -> RootFindingResult {
-//        return RootFindingResult(result: result)
-//    }
-//}
-//
-//extension ConjugateResponseDTO {
-//    func toDomain() -> RootFindingResult {
-//        return RootFindingResult(result: result)
-//    }
-//}
+extension ToBinaryResponseDTO {
+    func toBinaryDomain() -> BinaryFindindResult {
+        return BinaryFindindResult(root: root)
+    }
+}

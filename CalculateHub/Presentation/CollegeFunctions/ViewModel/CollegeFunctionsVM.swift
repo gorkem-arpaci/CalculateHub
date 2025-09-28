@@ -9,7 +9,8 @@ import Foundation
 
 @MainActor
 class NewtonRaphsonViewModel: ObservableObject {
-    @Published var x: String = ""
+    @Published var root: String = ""
+    @Published var iteration: String = ""
 
     private let repository = FormulaRepository()
 
@@ -22,7 +23,8 @@ class NewtonRaphsonViewModel: ObservableObject {
                 requestBody: request
             )
 
-            self.x = dto.toDomain().result
+            self.iteration = dto.toDomain().iteration
+            self.root = dto.toDomain().root
         } catch {
             print(error.localizedDescription)
         }
@@ -47,7 +49,8 @@ class NewtonRaphsonViewModel: ObservableObject {
                     requestBody: request
                 )
 
-            self.x = dto.toDomain().result
+            self.iteration = dto.toDomain().iteration
+            self.root = dto.toDomain().root
 
         } catch {
             print(error.localizedDescription)
@@ -65,7 +68,8 @@ class NewtonRaphsonViewModel: ObservableObject {
                 requestBody: request
             )
 
-            self.x = dto.toDomain().result
+            self.iteration = dto.toDomain().iteration
+            self.root = dto.toDomain().root
 
         } catch {
             print(error.localizedDescription)
@@ -78,7 +82,9 @@ class NewtonRaphsonViewModel: ObservableObject {
         do {
             let dto: IterationResponseDTO = try await repository.calculate(formula: .conjugate, requestBody: request)
             
-            self.x = dto.toDomain().result
+            self.iteration = dto.toDomain().iteration
+            self.root = dto.toDomain().root
+            
         } catch {
             print(error.localizedDescription)
         }
@@ -90,7 +96,9 @@ class NewtonRaphsonViewModel: ObservableObject {
         do {
             let dto: IterationResponseDTO = try await repository.calculate(formula: .secant, requestBody: request)
             
-            self.x = dto.toDomain().result
+            self.iteration = dto.toDomain().iteration
+            self.root = dto.toDomain().root
+            
         } catch {
             print(error.localizedDescription)
         }
@@ -102,13 +110,27 @@ class NewtonRaphsonViewModel: ObservableObject {
         do {
             let dto: IterationResponseDTO = try await repository.calculate(formula: .bisection, requestBody: request)
             
-            
-            self.x = dto.toDomain().result
+            self.iteration = dto.toDomain().iteration
+            self.root = dto.toDomain().root
+
             
         } catch {
             print(error.localizedDescription)
         }
         
         
+    }
+    
+    func calculateBinary(hexNum: String) async {
+        let request = ToBinaryRequestDTO(hex_num: hexNum)
+        
+        do {
+            let dto: ToBinaryResponseDTO = try await repository.calculate(formula: .toBinary, requestBody: request)
+            
+            self.root = dto.toBinaryDomain().root
+            
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 }

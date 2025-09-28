@@ -53,7 +53,8 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
-        .environmentObject(ThemeManager())
-
+    
+        ContentView()
+            .modelContainer(for: [ResponseData.self])
+            .environmentObject(ThemeManager())
 }

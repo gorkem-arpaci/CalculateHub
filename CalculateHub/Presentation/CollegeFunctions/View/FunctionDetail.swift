@@ -18,7 +18,8 @@ import SwiftUI
 struct FunctionDetail: View {
     @EnvironmentObject var themeManager : ThemeManager
     @StateObject var viewModel = NewtonRaphsonViewModel()
-    @State private var mainLabel : String = ""
+    @State private var rootLabel : String = ""
+    @State private var iterationLabel : String = ""
     @State private var resultLabel : String = ""
     @Binding var path: [String]
     
@@ -27,7 +28,7 @@ struct FunctionDetail: View {
     @State private var x1 : String = ""
     @State private var aText : String = ""
     @State private var bText : String = ""
-    @State private var iterasyonText : String = ""
+    @State private var iterationText : String = ""
     @State private var alpha : String = ""
     @State private var hexNum : String = ""
     @State private var nums : String = ""
@@ -36,19 +37,22 @@ struct FunctionDetail: View {
     var body: some View {
         
         VStack(alignment: .trailing) {
-            VStack(alignment: .trailing) {
+            VStack(alignment: .leading) {
+                
+                VStack(alignment: .leading) {
+                    Text(String(iterationLabel))
+                    Text(String(rootLabel))
+                }
+                    
+                    .foregroundStyle(.gray.opacity(0.8))
+                    .font(Font.custom("WorkSans", size: 32))
                 
                 TextField("Fonksiyon giriniz", text: $resultLabel)
                     .multilineTextAlignment(.trailing)
                     .foregroundStyle(.primary)
-                    .font(Font.custom("WorkSans-Light", size: 32))
+                    .font(Font.custom("WorkSans", size: 32))
                     .textInputAutocapitalization(.never)
                 
-                
-                Text(String(mainLabel))
-                    
-                    .foregroundStyle(.primary)
-                    .font(Font.custom("WorkSans-Light", size: 64))
             }
             .padding(10)
             
@@ -76,7 +80,7 @@ struct FunctionDetail: View {
                         TextFieldView(text: $x0, placeholder: "1. İterasyon 1. Değer")
                         TextFieldView(text: $x1, placeholder: "1. İterasyon 2. Değer")
                     }
-                case "ToBinary":
+                case "To Binary":
                     TextFieldView(text: $hexNum, placeholder: "Hexadecimal sayı girin")
                 default:
                     Text("")
@@ -103,12 +107,14 @@ struct FunctionDetail: View {
                     await viewModel.calculateBisection(a: aText, b: bText, func_input: resultLabel)
                 case "Secant":
                     await viewModel.calculateSecant(x_0: x0, x_1: x1, func_input: resultLabel)
+                case "To Binary":
+                    await viewModel.calculateBinary(hexNum: hexNum)
                 default:
                     break
                 }
-
+                rootLabel = "Result: \(viewModel.root)"
+                iterationLabel = !viewModel.iteration.isEmpty ? "Iteration: \(viewModel.iteration)" : ""
                 
-                   mainLabel = viewModel.x
             }
         
         }) {

@@ -41,3 +41,7 @@ struct BisectionRequestDTO: Encodable {
     let b: String
     let func_input: String
 }
+
+struct ToBinaryRequestDTO: Encodable {
+    let hex_num: String
+}

@@ -8,5 +8,10 @@
 import Foundation
 
 struct RootFindingResult {
-    let result: String
+    let iteration: String
+    let root: String
+}
+
+struct BinaryFindindResult {
+    let root: String
 }

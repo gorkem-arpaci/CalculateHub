@@ -9,7 +9,6 @@ import SwiftUI
 
 
 
-var toInfix = InfixToPostfix()
 let symbols: [String] = ["+", "-", "x", "÷", "%"]
 
 struct MainPageView: View {
@@ -17,18 +16,35 @@ struct MainPageView: View {
     @State private var operation : String = ""
     
     @EnvironmentObject var themeManager : ThemeManager
-
+    
     var body: some View {
         VStack(alignment: .trailing) {
             
             VStack(alignment: .trailing) {
                 Text(operation)
                     .foregroundStyle(.gray.opacity(0.8))
-                    .font(Font.custom("WorkSans-Light", size: 32))
+                    .font(Font.custom("WorkSans", size: 32))
+                    .minimumScaleFactor(0.5)
                 
-                Text(String(result))
-                    .foregroundStyle(.primary)
-                    .font(Font.custom("WorkSans-Light", size: 84))
+                ScrollViewReader { scrollProxy in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            Spacer(minLength: 0)
+                            Text(String(result))
+                                .foregroundStyle(.primary)
+                                .font(Font.custom("WorkSans", size: 84))
+                                .minimumScaleFactor(0.5)
+                                .id("RESULT")
+                        }
+                        .frame(minWidth: max(UIScreen.main.bounds.width - 10, 0))
+                    }
+                    .onChange(of: result) { _ in
+                        withAnimation(.easeOut(duration: .zero)) {
+                            scrollProxy.scrollTo("RESULT", anchor: .trailing)
+                        }
+                    }
+                }
+                
             }
             
             
@@ -39,7 +55,7 @@ struct MainPageView: View {
                     
                 }){
                     Image(systemName: "plus.forwardslash.minus")
-                        .font(Font.custom("WorkSans-Regular", size: 28))
+                        .font(Font.custom("WorkSans", size: 28))
                         .fontWeight(.medium)
                         .foregroundColor(.primary)
                         .frame(width: 78, height: 78)
@@ -72,12 +88,20 @@ struct MainPageView: View {
                 ButtonLayout(title: ".", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
                 ButtonLayout(title: "0", background: Color(UIColor.systemGray4), result: $result, operation: $operation)
                 
-                Button(action: {self.result.removeLast()}){
+                Button(action: {
+                    if self.result.count == 1 {
+                        self.result = "0"
+                    }
+                    else {
+                        self.result.removeLast()
+                    }
+                    
+                }){
                     Image(systemName: "delete.left")
                         .foregroundStyle(.primary)
                         .frame(width: 78, height: 78)
                         .fontWeight(.medium)
-                        .font(Font.custom("WorkSans-Regular", size: 28))
+                        .font(Font.custom("WorkSans", size: 28))
                 }
                 .background(Color(UIColor.systemGray4), in:RoundedRectangle(cornerRadius: 24))
                 .padding([.leading, .bottom, .trailing], 7)
@@ -88,7 +112,7 @@ struct MainPageView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .padding(.bottom, 25)
         .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
-
+        
     }
 }
 
@@ -107,7 +131,7 @@ struct ButtonLayout : View {
             addParameter(value: title)
         }){
             Text(title)
-                .font(Font.custom("WorkSans-Regular", size: 32))
+                .font(Font.custom("WorkSans", size: 32))
                 .fontWeight(.bold)
                 .foregroundColor(.primary)
                 .frame(width: 78, height: 78)
@@ -117,21 +141,25 @@ struct ButtonLayout : View {
         
     }
     
-
+    
     
     func addParameter(value: String) {
-        let operators: [String] = ["+", "-", "x", "÷", "%", "."]
-
+        let operators: [String] = ["+", "-", "x", "÷", "%"]
+        
         
         switch value {
         case "C":
             result = "0"
             
         case "=":
-            let post = toInfix.converter(separateString(result))
-            let calculation = toInfix.calculatePostfix(post)
-            operation = result
-            result = calculation.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(calculation)) : String(Float(calculation))
+            
+            do {
+                let calculation = try evaluate(result.replacingOccurrences(of: "x", with: "*").replacingOccurrences(of: "÷", with: "/"))
+                operation = result
+                result = calculation.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(calculation)) : String(calculation)
+            } catch {
+                result = "Hata"
+            }
             
         case "0" where result == "0":
             return
@@ -147,8 +175,18 @@ struct ButtonLayout : View {
             result.append(op)
             
         default:
-            // Sayı işlemi
-            if result == "0" {
+            // "." girildiğinde son operand içinde zaten "." var mı kontrol et
+            if value == "." {
+                var lastOperand = ""
+                for char in result.reversed() {
+                    if symbols.contains(String(char)) && char != "." { break } // operatör gördüysen dur
+                    lastOperand = String(char) + lastOperand
+                }
+                if lastOperand.contains(".") { return }
+            }
+            
+            // sayı ekleme
+            if result == "0" && value != "." {
                 result = value
             } else {
                 result.append(value)
@@ -174,7 +212,7 @@ struct ButtonLayout : View {
         }
         
         if !num.isEmpty {
-             result += num
+            result += num
         }
         
         return result.trimmingCharacters(in: .whitespaces)

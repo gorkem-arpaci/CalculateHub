@@ -27,7 +27,7 @@ struct CollegeFunctionsPage: View {
                         Button(action: {path.append(function.title)
                         }) {
                             Text(function.title)
-                                .font(Font.custom("WorkSans-Regular", size: 16))
+                                .font(Font.custom("WorkSans", size: 16))
                                 .fontWeight(.regular)
                                 .foregroundColor(.primary)
                                 .frame(width: 117, height: 117)
@@ -45,23 +45,7 @@ struct CollegeFunctionsPage: View {
     }
 }
 
-struct FunctionButtons: View {
-    let title: String
 
-    var body: some View {
-
-        Button(action: {}) {
-            Text(title)
-                .font(Font.custom("WorkSans-Regular", size: 16))
-                .fontWeight(.regular)
-                .foregroundColor(.primary)
-                .frame(width: 117, height: 117, alignment: .center)
-
-        }
-        .background(.indigo, in: RoundedRectangle(cornerRadius: 24))
-
-    }
-}
 
 #Preview {
     CollegeFunctionsPage(path: .constant([""]), isDetailPage: .constant(true))

@@ -13,7 +13,7 @@ class FormulaRepository {
     
     func calculate<T: Decodable>(formula: FormulaType, requestBody: Encodable) async throws -> T {
         try await withCheckedThrowingContinuation{ continuation in
-            apiClient.post(endpoint: formula.endpoint, body: requestBody) { (result: Result<T, Error>) in
+            apiClient.postFlask(endpoint: formula.endpoint, body: requestBody) { (result: Result<T, Error>) in
                 switch result {
                 case .success(let dto):
                     continuation.resume(returning: dto)
